@@ -105,14 +105,14 @@ function addTodo() {
   return false;
 }
 
-function toggleTodoCompleted(index) {
-  todos[index].completed = !todos[index].completed;
+function toggleTodoCompleted(id) {
+  todos[id].completed = !todos[id].completed;
   saveTodos();
   renderTodos();
 }
 
-function deleteTodo(index) {
-  todos.splice(index, 1);
+function deleteTodo(id) {
+  todos.splice(id, 1);
   saveTodos();
   renderTodos();
 }
