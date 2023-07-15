@@ -3,6 +3,16 @@
 <head>
 <title>todo-list</title>
 <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet'>
+<link
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+rel="stylesheet"
+integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+crossorigin="anonymous"
+/>
+<link
+rel="stylesheet"
+href="https://site-assets.fontawesome.com/releases/v6.4.0/css/all.css"
+/>
 <link rel="stylesheet" href = './index.css'/>
 </head>
   <body>
@@ -78,14 +88,14 @@ async function renderTodos() {
 
     const deleteButton = document.createElement("span");
     deleteButton.className = "span-button";
-    deleteButton.innerHTML = 'Delete';
+    deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
     deleteButton.id = 'delete-button';
     deleteButton.addEventListener("click", () => deleteTodo(index));
 
     const editButton = document.createElement("span");
     editButton.className = "span-button";
     editButton.id = 'editButton'
-    editButton.innerHTML = 'Edit';
+    editButton.innerHTML = '<i class="fa-solid fa-pen"></i>';
     editButton.addEventListener("click", () => editTodo(index));
 
     const updateButton = document.createElement("button");
@@ -144,7 +154,7 @@ function editTodo(id) {
   editInput.style.display = 'block';
   let deleteButton = elements.querySelector('#delete-button');
   deleteButton.style.display = 'none';
-  editIndex = index;
+  editIndex = id;
 }
 
 function toggleTodoCompleted(id) {
