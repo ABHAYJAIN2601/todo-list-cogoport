@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Page Title</title>
+<title>todo-list</title>
+<link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet'>
 <link rel="stylesheet" href = './index.css'/>
 </head>
   <body>
     <div class="todo-app">
         <h1 class="title">To-do list</h1>
         <p class="qoute">“Each day I will accomplish one thing on my to do list.”</p>
-      <form class="input-section">
+      <div class="input-section">
         <input id="todoInput" type="text" placeholder="Add item..." />
         <button id="addBtn" type="submit" class="add">Add</button>
-      </form>
+      
+      </div>
       <div class="todos">
         <ul class="todo-list">
         </ul>
@@ -20,12 +22,12 @@
   </body>
   <script>
     let todos = JSON.parse(localStorage.getItem("todos")) || [];
-let editIndex = -1;
-const todoForm = document.querySelector(".input-section");
-const todoInput = document.querySelector("#todoInput");
-const todoList = document.querySelector(".todo-list");
-const addButton = document.querySelector("#addBtn");
-const todo_main = document.querySelector(".todos");
+    let editIndex = -1;
+    const todoForm = document.querySelector(".input-section");
+    const todoInput = document.querySelector("#todoInput");
+    const todoList = document.querySelector(".todo-list");
+    const addButton = document.querySelector("#addBtn");
+    const todo_main = document.querySelector(".todos");
 
 function saveTodos() {
   localStorage.setItem("todos", JSON.stringify(todos));
@@ -44,8 +46,7 @@ function getData(){
         console.loh(error);
     })
 }
-
-getData();
+if(todos.length <= 200) getData();
 
 async function renderTodos() {
   todoList.innerHTML = "";
@@ -65,34 +66,63 @@ async function renderTodos() {
 
     const spanText = document.createElement("span");
     spanText.className = "todo-text";
+    spanText.id = 'todoText';
     spanText.textContent = todo.title;
+
+    const editInput = document.createElement("input");
+    editInput.type = 'text';
+    editInput.id = 'editInput';
+    editInput.className = "edit-input";
+    editInput.style.display = "none";
+    editInput.value = todo.title;
 
     const deleteButton = document.createElement("span");
     deleteButton.className = "span-button";
     deleteButton.innerHTML = 'Delete';
+    deleteButton.id = 'delete-button';
     deleteButton.addEventListener("click", () => deleteTodo(index));
 
+    const editButton = document.createElement("span");
+    editButton.className = "span-button";
+    editButton.id = 'editButton'
+    editButton.innerHTML = 'Edit';
+    editButton.addEventListener("click", () => editTodo(index));
+
+    const updateButton = document.createElement("button");
+    updateButton.className = "span-button";
+    updateButton.innerHTML = 'Save';
+    updateButton.id = "update-button";
+    updateButton.style.display = 'none';
+    updateButton.addEventListener("click", () => addTodo());
 
     li.appendChild(checkbox);
     li.appendChild(label);
     li.appendChild(spanText);
+    li.appendChild(editInput);
+    li.appendChild(editButton);
+    li.appendChild(updateButton);
     li.appendChild(deleteButton);
-
+    
     todoList.appendChild(li);
+
   });
 }
 function addTodo() {
-  const todoText = todoInput.value.trim();
+    const todoText = todoInput.value.trim();
+    todoForm.addEventListener("click", function(event){
+        event.preventDefault()
+    });
+    if(todoText =='' && editIndex ==-1)return false;
 
-  if (todoText !== "") {
     if (editIndex === -1) {
       todos.unshift({
         title: todoText,
         completed: false,
-        id: 0
       });
     } else {
-      todos[editIndex].title = todoText;
+      var elements = document.getElementById(editIndex);
+      let editInput = elements.querySelector('#editInput');
+      todos[editIndex].title = editInput.value;
       editIndex = -1;
       addButton.style.display = "inline";
     }
@@ -100,9 +130,21 @@ function addTodo() {
     saveTodos();
     renderTodos();
     todoInput.value = "";
-  }
+}
 
-  return false;
+function editTodo(id) {
+  var elements = document.getElementById(id);
+  let editButton = elements.querySelector('#editButton');
+  editButton.style.display = 'none';
+  let updateButton = elements.querySelector('#update-button');
+  updateButton.style.display = 'block';
+  let taskTitle = elements.querySelector('#todoText');
+  taskTitle.style.display = 'none';
+  let editInput = elements.querySelector('#editInput');
+  editInput.style.display = 'block';
+  let deleteButton = elements.querySelector('#delete-button');
+  deleteButton.style.display = 'none';
+  editIndex = index;
 }
 
 function toggleTodoCompleted(id) {
@@ -117,8 +159,7 @@ function deleteTodo(id) {
   renderTodos();
 }
 
-todoForm.addEventListener("submit", addTodo);
-
+addButton.addEventListener("click", addTodo);
 renderTodos();
   </script>
 </html>
