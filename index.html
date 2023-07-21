@@ -1,175 +1,488 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>todo-list</title>
-<link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet'>
-<link
-href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-rel="stylesheet"
-integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
-crossorigin="anonymous"
-/>
-<link
-rel="stylesheet"
-href="https://site-assets.fontawesome.com/releases/v6.4.0/css/all.css"
-/>
-<link rel="stylesheet" href = './index.css'/>
-</head>
-  <body>
-    <div class="todo-app">
-        <h1 class="title">To-do list</h1>
-        <p class="qoute">“Each day I will accomplish one thing on my to do list.”</p>
-      <div class="input-section">
-        <input id="todoInput" type="text" placeholder="Add item..." />
-        <button id="addBtn" type="submit" class="add">Add</button>
+   <head>
+      <title>todo-list</title>
+      <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet'>
+      <link
+         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+         rel="stylesheet"
+         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+         crossorigin="anonymous"
+         />
+      <link
+         rel="stylesheet"
+         href="https://site-assets.fontawesome.com/releases/v6.4.0/css/all.css"
+         />
+      <link rel="stylesheet" href = './index.css'/>
+   </head>
+   <body>
+      <div class="todo-app">
+         <h1 class="title">To-do list</h1>
+         <p class="qoute">“Each day I will accomplish one thing on my to do list.”</p>
+         <div class="upper-section">
+            <div class="upper-1">
+               <button class="button blue"onclick="openModel()">Add Task</button>
+            </div>
+            <div id="model" class="model">
+               <div class="model-content">
+                  <div class="input-section">
+                     <div>
+                        <input class="input" id="todoInput" type="text" placeholder="Add item..." />
+                        <div>
+                           <label for="prioritySelect">Select Priority:</label>
+                           <select id="prioritySelect" class="filter_select">
+                              <option value="1">Low</option>
+                              <option value="2">Medium</option>
+                              <option value="3">High</option>
+                           </select>
+                        </div>
+                        <div>
+                           <label for="categorySelect">Select Category:</label>
+                           <select id="categorySelect" class="filter_select">
+                              <option value="development">Development</option>
+                              <option value="frontend">Frontend</option>
+                              <option value="backend">Backend</option>
+                              <option value="product-management">Product Management</option>
+                           </select>
+                        </div>
+                     </div>
+                     <label for="dueDate">Due Date:</label>
+                     <input class="input" type="date" id="dueDate"/>
+                     <div>
+                        <input class="input" type="text" id="subtask" placeholder="Enter subtask here">
+                        <button class="button" onclick="addSubtask()">Add Subtask</button>
+                        <ul id="subtask_name">
+                        </ul>
+                     </div>
+                  </div>
+                  <div>
+                     <button id="addBtn" type="submit" class="button green">Save</button>
+                     <button class="button red" onclick="closeModel()">Close</button>
+                  </div>
+               </div>
+            </div>
+            <div>
+               <input class="input" type="text" id="search-input" placeholder="Search" />
+               <button class="button" type="button" id="search-button">Search</button>
+            </div>
+            <div class="filter_section">
+               <label for="dueDate">Due Date:</label>
+               <input class="input" type="date" id="dueDate">
+               <label for="filter_label">Category:</label>
+               <select id="filter_category" class="filter_select">
+                  <option value="all">All</option>
+                  <option value="development">Development</option>
+                  <option value="frontend">Frontend</option>
+                  <option value="backend">Backend</option>
+                  <option value="product-management">Product Management</option>
+               </select>
+               <!-- Select input field for priority -->
+               <label for="filter_priority">Priority:</label>
+               <select id="filter_priority" class="filter_select">
+                  <option value="all">All</option>
+                  <option value="1">Low</option>
+                  <option value="2">Medium</option>
+                  <option value="3">High</option>
+               </select>
+               <button class="button" onclick="displayFilteredTodos()" class="filter_button">Filter</button>
+            </div>
+            <!-- Select input field for category -->
+            <!-- Select input field for sorting -->
+            <div>
+               <label for="sorting">Sort By:</label>
+               <select id="sort_sorting" class="filter_select">
+                  <option value="none">None</option>
+                  <option value="dueDate">Due Date</option>
+                  <option value="priority">Priority</option>
+               </select>
+               <!-- Button to trigger sorting -->
+               <button class="button" onclick="sortTodos()">Sort</button>
+            </div>
+            <div>
+               <button class="button" onclick="viewBacklogs()">View Backlogs</button>
+               <button class="button red" onclick="reset()">Reset</button>
+               <button class="button green" onclick="activityLog()">Activity Log</button>
+            </div>
+         </div>
+         <div class="todos">
+            <ul class="todo-list">
+            </ul>
+         </div>
+      </div>
+   </body>
+   <script>
+      const priorityMapping = {
+         "1" : "low",
+         "2":"medium",
+         "3":"high"
+      };
+      // Function to open the model
+      let subtasks = [];
       
-      </div>
-      <div class="todos">
-        <ul class="todo-list">
-        </ul>
-      </div>
-    </div>
-  </body>
-  <script>
-    let todos = JSON.parse(localStorage.getItem("todos")) || [];
-    let editIndex = -1;
-    const todoForm = document.querySelector(".input-section");
-    const todoInput = document.querySelector("#todoInput");
-    const todoList = document.querySelector(".todo-list");
-    const addButton = document.querySelector("#addBtn");
-    const todo_main = document.querySelector(".todos");
-
-function saveTodos() {
-  localStorage.setItem("todos", JSON.stringify(todos));
-}
-
-function getData(){
-    fetch('https://jsonplaceholder.typicode.com/todos').then((response)=>{
-        if(!response.ok){
-            throw new Error('error');
-        }
-        return response.json();
-    }).then((data)=>{
-        todos = data;
-        saveTodos();
-    }).catch((error)=>{
-        console.loh(error);
-    })
-}
-if(todos.length <= 200) getData();
-
-async function renderTodos() {
-  todoList.innerHTML = "";
-
-  todos.forEach((todo, index) => {
-    const li = document.createElement("li");
-    li.className = "li";
-    li.setAttribute('id',index);
-    const checkbox = document.createElement("input");
-    checkbox.className = "form-check-input";
-    checkbox.type = "checkbox";
-    checkbox.checked = todo.completed;
-    checkbox.addEventListener("change", () => toggleTodoCompleted(index));
-
-    const label = document.createElement("label");
-    label.className = "form-check-label";
-
-    const spanText = document.createElement("span");
-    spanText.className = "todo-text";
-    spanText.id = 'todoText';
-    spanText.textContent = todo.title;
-
-    const editInput = document.createElement("input");
-    editInput.type = 'text';
-    editInput.id = 'editInput';
-    editInput.className = "edit-input";
-    editInput.style.display = "none";
-    editInput.value = todo.title;
-
-    const deleteButton = document.createElement("span");
-    deleteButton.className = "span-button";
-    deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
-    deleteButton.id = 'delete-button';
-    deleteButton.addEventListener("click", () => deleteTodo(index));
-
-    const editButton = document.createElement("span");
-    editButton.className = "span-button";
-    editButton.id = 'editButton'
-    editButton.innerHTML = '<i class="fa-solid fa-pen"></i>';
-    editButton.addEventListener("click", () => editTodo(index));
-
-    const updateButton = document.createElement("button");
-    updateButton.className = "span-button";
-    updateButton.innerHTML = 'Save';
-    updateButton.id = "update-button";
-    updateButton.style.display = 'none';
-    updateButton.addEventListener("click", () => addTodo());
-
-    li.appendChild(checkbox);
-    li.appendChild(label);
-    li.appendChild(spanText);
-    li.appendChild(editInput);
-    li.appendChild(editButton);
-    li.appendChild(updateButton);
-    li.appendChild(deleteButton);
-    
-    todoList.appendChild(li);
-
-  });
-}
-function addTodo() {
-    const todoText = todoInput.value.trim();
-    todoForm.addEventListener("click", function(event){
-        event.preventDefault()
-    });
-    if(todoText =='' && editIndex ==-1)return false;
-
-    if (editIndex === -1) {
-      todos.unshift({
-        title: todoText,
-        completed: false,
+      function addSubtask() {
+      const subtaskInput = document.getElementById("subtask");
+      const subtask = subtaskInput.value;
+      const subtaskText = document.getElementById("subtask_name");
+      
+      const element = document.createElement('li');
+      element.className = "tag-container";
+      element.innerText = subtask;
+      element.addEventListener('click',()=>removeSubTask(subtasks.length));
+      subtaskText.appendChild(element);
+      // Add the subtask to the subtasks array
+      subtasks.push(subtask);
+      
+      // Clear the subtask input field
+      subtaskInput.value = "";
+      }
+      function openModel() {
+      var model = document.getElementById("model");
+      model.style.display = "block";
+      }
+      function removeSubTask(id) {
+        
+        subtasks.splice(id, 1);
+        const subtaskText = document.getElementById("subtask_name");
+        subtaskText.innerHTML ="";
+        subtasks.forEach((subtask,index)=>{
+      const element = document.createElement('li');
+      element.classList = "tag-container";
+      element.innerText = subtask;
+      element.addEventListener('click',()=>removeSubTask(index));
+      subtaskText.appendChild(element);
       });
-    } else {
-      var elements = document.getElementById(editIndex);
+      
+      }
+      // Function to close the model
+      function closeModel() {
+      var model = document.getElementById("model");
+      model.style.display = "none";
+      }
+      function reset() {
+         displayTodos(todos);
+      }
+      
+      let todos = JSON.parse(localStorage.getItem("todos")) || [];
+      let editIndex = -1;
+      const todoForm = document.querySelector(".input-section");
+      const todoInput = document.querySelector("#todoInput");
+      const todoList = document.querySelector(".todo-list");
+      const addButton = document.querySelector("#addBtn");
+      const todo_main = document.querySelector(".todos");
+      const searchInput = document.getElementById("search-input");
+      const searchButton = document.getElementById("search-button");
+      function saveTodos() {
+      localStorage.setItem("todos", JSON.stringify(todos));
+      }
+      // Function to sort todos based on selected criteria
+      function sortTodos() {
+      const sortingCriteria = document.getElementById("sort_sorting").value;
+      console.log(sortingCriteria)
+      let sortedTodos = [];
+      
+      if (sortingCriteria === "none") {
+          // If no sorting criteria selected, show all todos
+          sortedTodos = todos;
+      } else if (sortingCriteria === "dueDate") {
+          // Sort todos by due date
+          sortedTodos = todos.slice().sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
+      } else if (sortingCriteria === "priority") {
+         console.log('hey')
+          // Sort todos by priority (assuming priority is represented as a numerical value, e.g., 1 for low, 2 for medium, 3 for high)
+          sortedTodos = todos.slice().sort((a, b) => a.priority - b.priority);
+      }
+      
+      // Display the sorted todos in the todo list
+      console.log(sortedTodos)
+      displayTodos(sortedTodos);
+      }
+      
+      // Function to display todos in the todo list
+      function displayTodos(todoArray) {
+      todoList.innerHTML = "";
+      // Display the filtered todos in the todo list
+      if(todoArray.length>0){
+      todoArray.forEach((todo, index) => {
+       
+      
+      
+      const li = document.createElement("li");
+      li.className = "li draggable";
+      li.setAttribute('id',index);
+      const checkbox = document.createElement("input");
+      checkbox.className = "form-check-input";
+      checkbox.type = "checkbox";
+      checkbox.checked = todo.completed;
+      checkbox.addEventListener("change", () => toggleTodoCompleted(index));
+      
+      const label = document.createElement("label");
+      label.className = "form-check-label";
+      
+      const spanText = document.createElement("span");
+      spanText.className = "todo-text";
+      spanText.id = 'todoText';
+      todoText = `${todo.title} (Due: ${todo.due_date})`;
+      spanText.innerHTML = todoText;
+      
+      
+      const subtaskUl = document.createElement('ul');
+      
+      if (todo.subtasks.length > 0) {
+          todo.subtasks.forEach(subtask => {
+               const subTaskLi = document.createElement('li');
+               // subTaskLi.classList = 'draggable';
+               subTaskLi.innerHTML = subtask;
+               subtaskUl.appendChild(subTaskLi);
+          });
+      }
+
+      const priority = document.createElement("span");
+      priority.className = "tag-container "+priorityMapping[todo.priority];
+      priority.id = 'todoText';
+      priority.textContent = priorityMapping[todo.priority];
+      
+      const category= document.createElement("span");
+      category.className = "tag-container";
+      category.id = 'todoText';
+      category.textContent =  todo.category;
+      
+      
+      const editInput = document.createElement("input");
+      editInput.type = 'text';
+      editInput.id = 'editInput';
+      editInput.className = "edit-input";
+      editInput.style.display = "none";
+      editInput.value = todo.title;
+      
+      const deleteButton = document.createElement("span");
+      deleteButton.className = "span-button";
+      deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
+      deleteButton.id = 'delete-button';
+      deleteButton.addEventListener("click", () => deleteTodo(index));
+      
+      const editButton = document.createElement("span");
+      editButton.className = "span-button";
+      editButton.id = 'editButton'
+      editButton.innerHTML = '<i class="fa-solid fa-pen"></i>';
+      editButton.addEventListener("click", () => editTodo(index));
+      
+      const updateButton = document.createElement("button");
+      updateButton.className = "span-button";
+      updateButton.innerHTML = 'Save';
+      updateButton.id = "update-button";
+      updateButton.style.display = 'none';
+      updateButton.addEventListener("click", () => addTodo());
+      
+      li.appendChild(checkbox);
+      li.appendChild(label);
+      li.appendChild(spanText);
+      // li.appendChild(subtaskUl);
+      li.appendChild(priority);
+      li.appendChild(category);
+      li.appendChild(editInput);
+      li.appendChild(editButton);
+      li.appendChild(updateButton);
+      li.appendChild(deleteButton);
+      
+      todoList.appendChild(li);
+      todoList.appendChild(subtaskUl);
+      });
+      }else {
+      todoList.innerHTML = `<img class="face" src="asetes/thinking.png" alt="">
+                            <h1 class="not-found"> NOT FOUND</h1>`;
+      }
+      }
+      
+      function activityLog() {
+         todoList.innerHTML = "";
+
+      todos.forEach((todo, index) => {
+       
+      
+      
+    
+      
+      if(todo.completed==true){
+         console.log(todo)
+         const li = document.createElement("li");
+      li.className = "li";
+      li.setAttribute('id',index);
+         const spanText = document.createElement("span");
+      spanText.className = "todo-text";
+      spanText.id = 'todoText';
+      todoText = `${todo.title} (Due: ${todo.due_date}) completed on ${todo.completed_at} of priority ${priorityMapping[todo.priority]} and category ${todo.category}`;
+      spanText.innerHTML = todoText;
+       
+      
+     
+      li.appendChild(spanText);
+      
+      todoList.appendChild(li);
+      }
+      
+      });
+
+      }
+      // Function to view backlogs (pending or missed tasks)
+      function viewBacklogs() {
+      const currentDate = new Date();
+      const backlogTodos = todos.filter(todo => todo.completed != true);
+      
+      // Display the backlogs in the todo list
+      displayTodos(backlogTodos);
+      }
+      
+      
+      function displayFilteredTodos() {
+      
+      // Clear existing todos from the list
+      todoList.innerHTML = "";
+      
+      // Get the selected filter values
+      const categoryFilter = document.getElementById("filter_category").value;
+      const priorityFilter = document.getElementById("filter_priority").value;
+      
+      // Filter todos based on the selected filters
+      const filteredTodos = todos.filter(todo => {
+          const categoryMatch = categoryFilter === "all" || todo.category === categoryFilter;
+          const priorityMatch = priorityFilter === "all" || todo.priority === priorityFilter;
+          return categoryMatch && priorityMatch;
+      });
+      displayTodos(filteredTodos);
+      }
+      
+      
+      function makeItemsDraggable() {
+      const draggableItems = document.querySelectorAll(".draggable");
+      console.log(draggableItems)
+      draggableItems.forEach(item => {
+          item.draggable = true;
+      
+          item.addEventListener("dragstart", dragStart);
+          item.addEventListener("dragover", dragOver);
+          item.addEventListener("drop", drop);
+      });
+      }
+      
+      // Function to handle drag start
+      function dragStart(event) {
+      event.dataTransfer.setData("text/plain", event.target.id);
+      }
+      
+      // Function to handle drag over
+      function dragOver(event) {
+      event.preventDefault();
+      }
+      
+      // Function to handle drop
+      function drop(event) {
+      event.preventDefault();
+      const data = event.dataTransfer.getData("text/plain");
+
+      const draggableItem = document.getElementById(data);
+      // Check if dropped item is a subtask
+      const isSubtask = event.target.parentElement.id === "subtaskList";
+
+      var b = todos[data];
+todos[data] = todos[event.target.parentElement.id];
+todos[event.target.parentElement.id] = b;
+saveTodos();
+         displayTodos(todos);
+
+      // If subtask, append to the subtask list under the same main task
+      // if (isSubtask) {
+      //     event.target.parentElement.appendChild(draggableItem);
+      // } else {
+      //     // If task, append to the todo list
+      //     event.target.appendChild(draggableItem);
+      // }
+      }
+      
+      // Call the makeItemsDraggable function when the page loads
+      window.addEventListener("load", makeItemsDraggable);
+      function addTodo() {
+      const todoText = todoInput.value.trim();
+      todoForm.addEventListener("click", function(event){
+          event.preventDefault()
+      });
+      // Get the select element
+      const prioritySelect = document.getElementById("prioritySelect");
+      // Get the select element
+      const categorySelect = document.getElementById("categorySelect");
+      const dueDateInput = document.getElementById("dueDate");
+      
+      // Get the selected category
+      const selectedCategory = categorySelect.value;
+      
+      // You can now use the selectedCategory variable to perform any necessary actions based on the chosen category.
+      
+      
+      if(todoText =='' && editIndex ==-1)return false;
+      
+      if (editIndex === -1) {
+        todos.unshift({
+          title: todoText,
+          completed: false,
+          priority:prioritySelect.value,
+          category :categorySelect.value,
+          due_date:dueDateInput.value,
+          subtasks:subtasks
+        });
+      } else {
+        var elements = document.getElementById(editIndex);
+        let editInput = elements.querySelector('#editInput');
+        todos[editIndex].title = editInput.value;
+        editIndex = -1;
+        addButton.style.display = "inline";
+      }
+      
+      saveTodos();
+      displayTodos(todos);
+      todoInput.value = "";
+      subtasks = [];
+      }
+      
+      function editTodo(id) {
+      var elements = document.getElementById(id);
+      let editButton = elements.querySelector('#editButton');
+      editButton.style.display = 'none';
+      let updateButton = elements.querySelector('#update-button');
+      updateButton.style.display = 'block';
+      let taskTitle = elements.querySelector('#todoText');
+      taskTitle.style.display = 'none';
       let editInput = elements.querySelector('#editInput');
-      todos[editIndex].title = editInput.value;
-      editIndex = -1;
-      addButton.style.display = "inline";
-    }
-
-    saveTodos();
-    renderTodos();
-    todoInput.value = "";
-}
-
-function editTodo(id) {
-  var elements = document.getElementById(id);
-  let editButton = elements.querySelector('#editButton');
-  editButton.style.display = 'none';
-  let updateButton = elements.querySelector('#update-button');
-  updateButton.style.display = 'block';
-  let taskTitle = elements.querySelector('#todoText');
-  taskTitle.style.display = 'none';
-  let editInput = elements.querySelector('#editInput');
-  editInput.style.display = 'block';
-  let deleteButton = elements.querySelector('#delete-button');
-  deleteButton.style.display = 'none';
-  editIndex = id;
-}
-
-function toggleTodoCompleted(id) {
-  todos[id].completed = !todos[id].completed;
-  saveTodos();
-  renderTodos();
-}
-
-function deleteTodo(id) {
-  todos.splice(id, 1);
-  saveTodos();
-  renderTodos();
-}
-
-addButton.addEventListener("click", addTodo);
-renderTodos();
-  </script>
+      editInput.style.display = 'block';
+      let deleteButton = elements.querySelector('#delete-button');
+      deleteButton.style.display = 'none';
+      editIndex = id;
+      }
+      
+      function toggleTodoCompleted(id) {
+      todos[id].completed = !todos[id].completed;
+      todos[id].completed_at = new Date().toISOString().split('T')[0];
+      saveTodos();
+      displayTodos(todos);
+      }
+      
+      function deleteTodo(id) {
+      todos.splice(id, 1);
+      saveTodos();
+      displayTodos(todos);
+      }
+      function searchTodo() {
+      const searchQuery = searchInput.value.trim();
+      if (searchQuery !== "") {
+      const searchResults = todos.filter((todo) =>
+      todo.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      displayTodos(searchResults);
+      } else {
+      displayTodos(todos);
+      }
+      }
+      addButton.addEventListener("click", addTodo);
+      searchButton.addEventListener("click", searchTodo);
+      
+      displayTodos(todos);
+   </script>
 </html>

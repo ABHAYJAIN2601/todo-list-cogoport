@@ -4,9 +4,127 @@ body {
     align-items: center;
     justify-content: center;
     font-family: ubuntu;
+    color: #fff;
   }
+  /* Styling for the filter section container */
+.filter_section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* Styling for the label elements */
+.filter_label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+/* Styling for the select elements */
+.filter_select {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+}
+.upper-1{
+  justify-self: flex-end;
+}
+/* Styling for the button element */
+.filter_button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007BFF;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.filter_button:hover {
+  background-color: #0056b3;
+}
+.upper-section{
+  display: flex;
+  flex-direction: column;
+}
+.tag-container {
+  display: inline-block;
+  margin-right: 5px;
+  padding: 4px 8px;
+  background-color: #007BFF;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Styling for different tag colors (you can customize these colors) */
+.tag-container.low {
+  background-color: #28a745; /* Green for low priority */
+  color: #fff;
+}
+.tag-container.medium {
+  background-color: #ffc107; /* Yellow for medium priority */
+  color: #000;
+}
+.tag-container.hard {
+  background-color: #dc3545; /* Red for high priority */
+  color: #fff;
+}
+.button.red {
+
+  background-color: rgb(241, 36, 36);
+  /* box-shadow: 9px 21px 30px -19px rgba(247, 94, 94, 0.63); */
+}
+.button.green {
+
+  background-color: rgb(32, 235, 59);
+  /* box-shadow: 9px 21px 30px -19px rgba(247, 94, 94, 0.63); */
+}
+.button.blue{
+  background-color: #007BFF;
+}
+.button.red :hover{
+
+  background-color: rgb(247, 89, 89) !important;
+  /* box-shadow: 9px 21px 30px -19px rgba(247, 94, 94, 0.63); */
+}
+  /* Style for the model container */
+.model {
+  display: none; /* Hide the model by default */
+  position: fixed; /* Fixed position to overlay the entire page */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+}
+.not-found{
+  color: #fff;
+  top: 60%;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 30%;
+}
+
+/* Style for the model content */
+.model-content {
+  background-color: rgb(48, 48, 48) !important;
+  padding: 20px;
+  border-radius: 5px;
+  width: 60%;
+  max-width: 500px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
   .todo-app {
-    width: 800px;
+    width: 80%;
     height: 600px;
     border-radius: 15px;
     margin: 80px 0px;
@@ -15,6 +133,9 @@ body {
     text-align: center;
     color: #fff;
   }
+  .draggable {
+    cursor: grab;
+}
   .qoute{
     font-style: italic;
     color: #fff;
@@ -24,10 +145,11 @@ body {
   .input-section {
     display: flex;
     align-items: center;
+    flex-direction: column;
     margin-top: 20px;
-    height: 30px;
+    height: fit-content;
   }
-  .input-section input{
+  .input{
     flex-grow: 1;
     padding: 16px;
     border: none;
@@ -38,11 +160,11 @@ body {
     box-shadow: 9px 21px 30px -19px rgba(0, 0, 0, 0.63);
   }
 
-  .input-section input:focus {
+  .input:focus {
     outline: none;
     background-color: #555;
   }
-  .input-section button {
+  .button {
     margin-left: 10px;
     padding: 16px 23px;
     border: none;
@@ -53,7 +175,7 @@ body {
     cursor: pointer;
     box-shadow: 9px 21px 30px -19px rgba(0, 0, 0, 0.63);
   }
-  .input-section button:hover {
+  .button:hover {
     outline: none;
     background-color: #555;
   }
