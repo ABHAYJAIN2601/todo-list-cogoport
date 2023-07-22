@@ -10,7 +10,7 @@ body {
 .filter_section {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 20px;
 }
 
@@ -23,13 +23,29 @@ body {
 /* Styling for the select elements */
 .filter_select {
   padding: 5px;
+  margin: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #fff;
   cursor: pointer;
 }
 .upper-1{
-  justify-self: flex-end;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+  /* justify-self: flex-end; */
+}
+.upper-2{
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+  /* justify-self: flex-end; */
+}
+.upper-4{
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+  /* justify-self: flex-end; */
 }
 /* Styling for the button element */
 .filter_button {
@@ -69,7 +85,7 @@ body {
   background-color: #ffc107; /* Yellow for medium priority */
   color: #000;
 }
-.tag-container.hard {
+.tag-container.high {
   background-color: #dc3545; /* Red for high priority */
   color: #fff;
 }
@@ -136,6 +152,9 @@ body {
   .draggable {
     cursor: grab;
 }
+.draggable-subtask {
+  cursor: grab;
+}
   .qoute{
     font-style: italic;
     color: #fff;
@@ -150,8 +169,9 @@ body {
     height: fit-content;
   }
   .input{
-    flex-grow: 1;
-    padding: 16px;
+    /* flex-grow: 1; */
+    margin: 10px;
+    padding: 10px 15px;
     border: none;
     background-color: rgb(33, 33, 33);
     color: #fff;
@@ -159,14 +179,17 @@ body {
     border-radius: 30px;
     box-shadow: 9px 21px 30px -19px rgba(0, 0, 0, 0.63);
   }
-
+.priority-category{
+  display: flex;
+  margin: 20px;
+}
   .input:focus {
     outline: none;
     background-color: #555;
   }
   .button {
     margin-left: 10px;
-    padding: 16px 23px;
+    padding: 10px 15px;
     border: none;
     background-color: rgb(33, 33, 33);
     color: #ffffff;
