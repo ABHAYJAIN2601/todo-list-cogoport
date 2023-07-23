@@ -80,7 +80,15 @@ function displayTodos(todoArray) {
                 subtaskUl.appendChild(subTaskLi);
              });
           }
-
+          const tagSpan = document.createElement('span');
+          if (todo.tags.length > 0) {
+            todo.tags.forEach((tag) => {
+               const span = document.createElement('span');
+               span.setAttribute('class', `tag-container tag`);
+               span.innerHTML = tag;
+               tagSpan.appendChild(span);
+            });
+         }
           const priority = document.createElement("span");
           priority.className = "tag-container " + priorityMapping[todo.priority];
           priority.id = 'todoText';
@@ -103,12 +111,6 @@ function displayTodos(todoArray) {
           editButton.innerHTML = '<i class="fa-solid fa-pen"></i>';
           editButton.addEventListener("click", () => editTodo(index));
 
-        //   const addSubtaskButton = document.createElement("span");
-        //   addSubtaskButton.className = "span-button";
-        //   addSubtaskButton.id = 'addSubtaskButton'
-        //   addSubtaskButton.innerHTML = '<i class="fa-solid fa-plus"></i>';
-        //   addSubtaskButton.addEventListener("click", () => addSubtask(index));
-
           const updateButton = document.createElement("button");
           updateButton.className = "span-button";
           updateButton.innerHTML = 'Save';
@@ -119,7 +121,7 @@ function displayTodos(todoArray) {
           li.appendChild(checkbox);
           li.appendChild(label);
           li.appendChild(spanText);
-          // li.appendChild(subtaskUl);
+          li.appendChild(tagSpan);
           li.appendChild(priority);
           li.appendChild(category);
           li.appendChild(editButton);

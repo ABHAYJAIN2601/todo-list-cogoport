@@ -6,6 +6,7 @@
    };
    // Function to open the model
    let subtasks = [];
+   let tags = [];
 
    function addSubtaskEnter(event) {
       if (event.key === 'Enter') {
@@ -17,18 +18,27 @@
       const subtaskInput = document.getElementById("subtask");
       const subtask = subtaskInput.value;
       if (subtask == '') return;
-      const subtaskText = document.getElementById("subtask_name");
-
-      const element = document.createElement('li');
-      element.className = "tag-container";
-      element.innerText = subtask;
-      element.addEventListener('click', () => removeSubTask(subtasks.length));
-      subtaskText.appendChild(element);
       // Add the subtask to the subtasks array
       subtasks.push({ subtask, completed: false, completed_at: null });
-
+      renderSubtask();
       // Clear the subtask input field
       subtaskInput.value = "";
+   }
+   function addTagEnter(event) {
+      if (event.key === 'Enter') {
+         addTagtask();
+      }
+   }
+
+   function addTagtask() {
+      const tagInput = document.getElementById("tags");
+      const tag = tagInput.value;
+      if (tag == '') return;
+      // Add the subtask to the subtasks array
+      tags.push(tag);
+      renderTagtask();
+      // Clear the subtask input field
+      tagInput.value = "";
    }
 
    function openModel() {
@@ -59,6 +69,31 @@
 
       subtasks.splice(id, 1);
       renderSubtask();
+
+   }
+
+   function renderTagtask() {
+      const subtaskText = document.getElementById("tag_name");
+      subtaskText.innerHTML = "";
+      tags.forEach((tag, index) => {
+         const element = document.createElement('li');
+         element.classList = "tag-container tag";
+         element.innerText = tag;
+         const crossSpan = document.createElement('span');
+         crossSpan.innerHTML = '<i class="fa-regular fa-circle-xmark"></i>';
+
+         // </span>  click = "${() => removeSubTask(index)}"></i>`;
+         crossSpan.addEventListener('click', () => removeTagTask(index));
+
+         subtaskText.appendChild(element);
+         subtaskText.appendChild(crossSpan);
+      });
+   }
+
+   function removeTagTask(id) {
+
+      tags.splice(id, 1);
+      renderTagtask();
 
    }
    // Function to close the model
@@ -158,9 +193,30 @@
       // Get the selected filter values
       const categoryFilter = document.getElementById("filter_category").value;
       const priorityFilter = document.getElementById("filter_priority").value;
+      const fromDueFilter = document.getElementById("fromDueDate").value;
+      const toDueFilter = document.getElementById("toDueDate").value;
+      // console.log(fromDueFilter,toDueFilter);
+
+// var check = new Date(c[0], parseInt(c[1])-1, c[0]);
+
 
       // Filter todos based on the selected filters
       const filteredTodos = todos.filter(todo => {
+         if(fromDueFilter && toDueFilter){
+            var d1 = fromDueFilter.split("-");
+            var d2 = toDueFilter.split("-");
+            
+            
+            var from = new Date(d1[0], parseInt(d1[1])-1, d1[1]);  // -1 because months are from 0 to 11
+            var to   = new Date(d2[0], parseInt(d2[1])-1, d2[1]);
+            var c = todo.due_date.split("-");
+            var check = new Date(c[0], parseInt(c[1])-1, c[1]);
+            console.log(check > from && check < to)
+         }
+         
+
+
+         const dueDateMatch = fromDueFilter && toDueFilter || todo.due_date;
          const categoryMatch = categoryFilter === "all" || todo.category === categoryFilter;
          const priorityMatch = priorityFilter === "all" || todo.priority === priorityFilter;
          return categoryMatch && priorityMatch;
@@ -255,13 +311,13 @@
     console.log(dueDateStr);
       // Check if the due date is "today"
       if (dueDateStr.toLowerCase() === "today") {
-         return new Date();
+         return new Date().toISOString().split['T'][0];;
       }
 
       // Check if the due date is "tomorrow"
       if (dueDateStr.toLowerCase() === "tomorrow") {
          const tomorrow = new Date();
-         tomorrow.setDate(tomorrow.getDate() + 1);
+         tomorrow.setDate(tomorrow.getDate() + 1).toISOString().split['T'][0];;
          return tomorrow;
       }
 
@@ -270,54 +326,61 @@
       return parsedDate;
    }
    function addTodo() {
+      // const dueDateMatch = todoText.match(/\b(?:tomorrow|today|\d{1,2}(?:st|nd|rd|th)? (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4}(?: \d{1,2}(?::\d{2})? [ap]m)?)\b/i);
+
+
+     
+      // if (dueDateMatch) {
+      //    // If due date is found, convert it to a date object
+      //    dueDate = parseDueDate(dueDateMatch[0]).toISOString();
+      //    console.log(dueDate);
+      // }
+      // console.log(todoTextWithoutDate, dueDate);
+    
       const todoText = todoInput.value.trim();
       todoForm.addEventListener("click", function (event) {
          event.preventDefault()
       });
-      const dueDateMatch = todoText.match(/\b(?:tomorrow|today|\d{1,2}(?:st|nd|rd|th)? (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4}(?: \d{1,2}(?::\d{2})? [ap]m)?)\b/i);
-
-      let dueDate;
-      if (dueDateMatch) {
-         // If due date is found, convert it to a date object
-         dueDate = parseDueDate(dueDateMatch[0]);
-      }
-      console.log(dueDate);
-      // Remove the due date from the todo text
-      const todoTextWithoutDate = dueDateMatch ? todoText.replace(dueDateMatch[0], '').trim() : todoText;
-      // console.log(todoTextWithoutDate, dueDate);
-
+      console.log(dueDateInput.value);
+      if (todoText == '' || dueDateInput.value=='' ) return false;
       if (todoText == '' && editIndex == -1) return false;
-
-    //   if (editIndex === -1) {
-    //      todos.unshift({
-    //         title: todoTextWithoutDate,
-    //         completed: false,
-    //         priority: prioritySelect.value,
-    //         category: categorySelect.value,
-    //         due_date: dueDate,
-    //         reminder_date: reminderDateInput.value,
-    //         subtasks: subtasks
-    //      });
-    //      activityLog.push(`${todoTextWithoutDate} added at ${new Date().toISOString().split('T')[0]}`);
-    //      saveActivityLog();
-    //   } else {
-    //      todos[editIndex].title = todoTextWithoutDate;
-    //      todos[editIndex].priority = prioritySelect.value;
-    //      todos[editIndex].category = categorySelect.value;
-    //      todos[editIndex].due_date = dueDateInput.value;
-    //      todos[editIndex].reminder_date = reminderDateInput.value,
-    //         editIndex = -1;
-    //      addButton.style.display = "inline";
-    //      activityLog.push(`${todoTextWithoutDate} edited at ${new Date().toISOString().split('T')[0]}`);
-    //      saveActivityLog();
-    //   }
-    //   todoInput.value = "";
+      
+      console.log(dueDateInput.value);
+      // Remove the due date from the todo text
+      // const todoTextWithoutDate = dueDateMatch ? todoText.replace(dueDateMatch[0], '').trim() : todoText;
+      if (editIndex === -1) {
+         todos.unshift({
+            title: todoText,
+            completed: false,
+            priority: prioritySelect.value,
+            category: categorySelect.value,
+            due_date: dueDateInput.value,
+            reminder_date: reminderDateInput.value,
+            subtasks: subtasks,
+            tags:tags
+         });
+         activityLog.push(`${todoText} added at ${new Date().toISOString().split('T')[0]}`);
+         saveActivityLog();
+      } else {
+         todos[editIndex].title = todoText;
+         todos[editIndex].priority = prioritySelect.value;
+         todos[editIndex].category = categorySelect.value;
+         todos[editIndex].due_date = dueDateInput.value;
+         todos[editIndex].reminder_date = reminderDateInput.value;
+         todos[editIndex].tags=tags;
+            editIndex = -1;
+         addButton.style.display = "inline";
+         activityLog.push(`${todoText} edited at ${new Date().toISOString().split('T')[0]}`);
+         saveActivityLog();
+      }
+      todoInput.value = "";
       subtasks = [];
+      tags = [];
       prioritySelect.value = '1';
       categorySelect.value = 'development';
       dueDateInput.value = null;
       saveTodos();
-    //   closeModel();
+      closeModel();
       renderSubtask();
       displayTodos(todos);
    }
@@ -343,7 +406,9 @@
       categorySelect.value = todos[id].category;
       dueDateInput.value = todos[id].due_date;
       subtasks = todos[id].subtasks;
+      tags = todos[id].tags;
       renderSubtask();
+      renderTagtask();
       editIndex = id;
    }
 
@@ -401,20 +466,30 @@
             );
             displayTodos(searchResults);
          } else if (searchBy.value === 'subtask') {
-            const searchSubTaskResults =
-               todos.map((todo) => {
-                  return { ...todo, subtasks: todo.subtasks.filter((subtask) => subtask.toLowerCase().includes(searchQuery.toLowerCase())) }
+            const searchSubTaskResults = [];
+
+               todos.forEach((todo) => {
+                  todo.subtasks.forEach((subtask)=>{
+                     if(subtask.subtask.toLowerCase().includes(searchQuery.toLowerCase())){
+                        searchSubTaskResults.push(todo);
+                     }
+                  });
                })
-            //     todos.forEach((todo) => {
-            //    todo.subtasks.filter((subtask) => {
-            //       subtask.toLowerCase().includes(searchQuery.toLowerCase())
-            //    });
-            // });
-            console.log(searchSubTaskResults);
             displayTodos(searchSubTaskResults);
+         } else if(searchBy.value === 'tag'){
+            const searchSubTaskResults = [];
+   
+            todos.forEach((todo) => {
+               todo.tags.forEach((tag)=>{
+                  if(tag.toLowerCase().includes(searchQuery.toLowerCase())){
+                     searchSubTaskResults.push(todo);
+                  }
+               });
+            })
+         displayTodos(searchSubTaskResults);
          }
 
-      } else {
+      }else {
          displayTodos(todos);
       }
    }

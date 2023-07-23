@@ -54,6 +54,13 @@
                      <input class="input" type="date" id="reminderDate" />
                   </div>
                   <div>
+                     <input class="input" type="text" id="tags" placeholder="Type tag here Press Enter"
+                        onkeydown="addTagEnter(event)">
+                     <button class="button" onclick="addTagtask()">Add Tag</button>
+                     <ul id="tag_name">
+                     </ul>
+                  </div>
+                  <div>
                      <input class="input" type="text" id="subtask" placeholder="Enter subtask here"
                         onkeydown="addSubtaskEnter(event)">
                      <button class="button" onclick="addSubtask()">Add Subtask</button>
@@ -73,14 +80,16 @@
                <!-- <option value="all">All</option> -->
                <option value="title">Title</option>
                <option value="subtask">SubTask</option>
-               <option value="tags">Tags</option>
+               <option value="tag">Tags</option>
             </select>
             <input class="input" type="text" id="search-input" placeholder="Search" />
             <button class="button red" type="button" id="search-button">Search</button>
          </div>
          <div class="filter_section">
-            <label for="dueDate">Due Date</label>
-            <input class="input" type="date" id="dueDate">
+            <label for="dueDate">from Date</label>
+            <input class="input" type="date" id="fromDueDate">
+            <label for="dueDate">To Date</label>
+            <input class="input" type="date" id="toDueDate">
             <label for="filter_label">Category</label>
             <select id="filter_category" class="filter_select">
                <option value="all">All</option>

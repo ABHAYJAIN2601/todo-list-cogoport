@@ -75,7 +75,10 @@ body {
   border-radius: 4px;
   font-size: 14px;
 }
-
+.tag-container.tag{
+  background-color:#ADFF2F;
+  color: #000;
+}
 /* Styling for different tag colors (you can customize these colors) */
 .tag-container.low {
   background-color: #28a745; /* Green for low priority */
