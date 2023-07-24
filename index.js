@@ -4,7 +4,6 @@
       "2": "medium",
       "3": "high"
    };
-   // Function to open the model
    let subtasks = [];
    let tags = [];
 
@@ -18,10 +17,8 @@
       const subtaskInput = document.getElementById("subtask");
       const subtask = subtaskInput.value;
       if (subtask == '') return;
-      // Add the subtask to the subtasks array
       subtasks.push({ subtask, completed: false, completed_at: null });
       renderSubtask();
-      // Clear the subtask input field
       subtaskInput.value = "";
    }
    function addTagEnter(event) {
@@ -34,10 +31,8 @@
       const tagInput = document.getElementById("tags");
       const tag = tagInput.value;
       if (tag == '') return;
-      // Add the subtask to the subtasks array
       tags.push(tag);
       renderTagtask();
-      // Clear the subtask input field
       tagInput.value = "";
    }
 
@@ -56,8 +51,6 @@
          element.innerText = subtask.subtask;
          const crossSpan = document.createElement('span');
          crossSpan.innerHTML = '<i class="fa-regular fa-circle-xmark"></i>';
-
-         // </span>  click = "${() => removeSubTask(index)}"></i>`;
          crossSpan.addEventListener('click', () => removeSubTask(index));
 
          subtaskText.appendChild(element);
@@ -81,10 +74,7 @@
          element.innerText = tag;
          const crossSpan = document.createElement('span');
          crossSpan.innerHTML = '<i class="fa-regular fa-circle-xmark"></i>';
-
-         // </span>  click = "${() => removeSubTask(index)}"></i>`;
          crossSpan.addEventListener('click', () => removeTagTask(index));
-
          subtaskText.appendChild(element);
          subtaskText.appendChild(crossSpan);
       });
@@ -96,7 +86,6 @@
       renderTagtask();
 
    }
-   // Function to close the model
    function closeModel() {
       var model = document.getElementById("model");
       model.style.display = "none";
@@ -150,9 +139,7 @@
       displayTodos(sortedTodos);
    }
 
-   // Function to display todos in the todo list
-  
-
+   
    function showActivityLog() {
       todoList.innerHTML = "";
 
@@ -164,13 +151,8 @@
          const spanText = document.createElement("span");
          spanText.className = "todo-text";
          spanText.id = 'todoText';
-         // todoText = activity;
          spanText.innerHTML = activity;
-
-
-
          li.appendChild(spanText);
-
          todoList.appendChild(li);
 
       });
@@ -206,20 +188,20 @@
             var d1 = fromDueFilter.split("-");
             var d2 = toDueFilter.split("-");
             
-            
-            var from = new Date(d1[0], parseInt(d1[1])-1, d1[1]);  // -1 because months are from 0 to 11
-            var to   = new Date(d2[0], parseInt(d2[1])-1, d2[1]);
+                console.log(fromDueFilter,toDueFilter,todo.due_date);
+            var from = new Date(d1[0], parseInt(d1[1])-1, d1[2]);  // -1 because months are from 0 to 11
+            var to   = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
             var c = todo.due_date.split("-");
-            var check = new Date(c[0], parseInt(c[1])-1, c[1]);
-            console.log(check > from && check < to)
+            var check = new Date(c[0], parseInt(c[1])-1, c[2]);
+            // console.log(o)
          }
          
 
 
-         const dueDateMatch = fromDueFilter && toDueFilter || todo.due_date;
+         const dueDateMatch = fromDueFilter && toDueFilter || check > from && check < t;
          const categoryMatch = categoryFilter === "all" || todo.category === categoryFilter;
          const priorityMatch = priorityFilter === "all" || todo.priority === priorityFilter;
-         return categoryMatch && priorityMatch;
+         return categoryMatch && priorityMatch && dueDateMatch;
       });
       displayTodos(filteredTodos);
    }
@@ -359,7 +341,7 @@
             subtasks: subtasks,
             tags:tags
          });
-         activityLog.push(`${todoText} added at ${new Date().toISOString().split('T')[0]}`);
+         activityLog.unshift(`Task: ${todoText} added at ${new Date().toISOString().split('T')[0]}`);
          saveActivityLog();
       } else {
          todos[editIndex].title = todoText;
@@ -370,7 +352,7 @@
          todos[editIndex].tags=tags;
             editIndex = -1;
          addButton.style.display = "inline";
-         activityLog.push(`${todoText} edited at ${new Date().toISOString().split('T')[0]}`);
+         activityLog.unshift(`Task: ${todoText} edited at ${new Date().toISOString().split('T')[0]}`);
          saveActivityLog();
       }
       todoInput.value = "";
@@ -429,7 +411,7 @@
    function toggleTodoCompleted(id) {
       todos[id].completed = !todos[id].completed;
       todos[id].completed_at = new Date().toISOString().split('T')[0];
-      activityLog.push(`${todos[id].title} mark completed at ${todos[id].completed_at}`);
+      activityLog.unshift(`Task: ${todos[id].title} mark completed at ${todos[id].completed_at}`);
       saveActivityLog();
       saveTodos();
       displayTodos(todos);
@@ -438,20 +420,20 @@
       console.log(id, index);
       todos[id].subtasks[index].completed = !todos[id].subtasks[index].completed;
       todos[id].subtasks[index].completed_at = new Date().toISOString().split('T')[0];
-      activityLog.push(`${todos[id].subtasks[index].subtask} of ${todos[id].title} mark completed at ${todos[id].subtasks[index].completed_at}`);
+      activityLog.unshift(`Subtask: ${todos[id].subtasks[index].subtask} of task ${todos[id].title} mark completed at ${todos[id].subtasks[index].completed_at}`);
       saveActivityLog();
       saveTodos();
       displayTodos(todos);
    }
    function deleteTodo(id) {
-      activityLog.push(`${todos[id].title} deleted at ${new Date().toISOString().split('T')[0]}`);
+      activityLog.unshift(`Task:${todos[id].title} deleted at ${new Date().toISOString().split('T')[0]}`);
       saveActivityLog();
       todos.splice(id, 1);
       saveTodos();
       displayTodos(todos);
    }
    function deleteSubTask(id, index) {
-      activityLog.push(`Subtask: ${todos[id].subtasks[index].subtask} of task ${todos[id].title} deleted at ${new Date().toISOString().split('T')[0]}`);
+      activityLog.unshift(`Subtask: ${todos[id].subtasks[index].subtask} of task ${todos[id].title} deleted at ${new Date().toISOString().split('T')[0]}`);
       saveActivityLog();
       todos[id].subtasks.splice(index, 1);
       saveTodos();
