@@ -296,12 +296,11 @@
       }
    }
 
-   // Call the makeItemsDraggable function when the page loads
+
    window.addEventListener("load", makeItemsDraggable);
 
    function parseDueDate(dueDateStr) {
-      // Use any date parsing library or custom logic here to convert due date string to date object
-      // For simplicity, we'll use JavaScript's Date object for basic date parsing
+
     console.log(dueDateStr);
       // Check if the due date is "today"
       if (dueDateStr.toLowerCase() === "today") {
@@ -315,7 +314,6 @@
          return tomorrow;
       }
 
-      // Parse date using JavaScript Date object (for example, for date format "13th Jan 2023 3 pm")
       const parsedDate = new Date(dueDateStr);
       return parsedDate;
    }
@@ -373,7 +371,7 @@
       prioritySelect.value = '1';
       categorySelect.value = 'development';
       dueDateInput.value = null;
-      reminderDateInput = null;
+      reminderDateInput = '';
       saveTodos();
      
       renderSubtask();
