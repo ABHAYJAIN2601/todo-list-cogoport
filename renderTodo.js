@@ -133,7 +133,7 @@ function displayTodos(todoArray) {
           todoList.appendChild(subtaskUl);
        });
     } else {
-       todoList.innerHTML = `<img class="face" src="asetes/thinking.png" alt="">
+       todoList.innerHTML = `
                           <h1 class="not-found"> NOT FOUND</h1>`;
     }
     makeItemsDraggable();

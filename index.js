@@ -89,6 +89,18 @@
    function closeModel() {
       var model = document.getElementById("model");
       model.style.display = "none";
+      todoInput.value = "";
+      subtasks = [];
+      tags = [];
+      console.log(tags,subtasks)
+      prioritySelect.value = '1';
+      categorySelect.value = 'development';
+      dueDateInput.value = null;
+      reminderDateInput = null;
+      const subtaskText = document.getElementById("subtask_name");
+      subtaskText.innerHTML = "";
+      const tagText = document.getElementById("tag_name");
+      tagText.innerHTML = "";
    }
 
    function reset() {
@@ -99,18 +111,18 @@
    let activityLog = JSON.parse(localStorage.getItem("activityLog")) || [];
    let editIndex = -1;
    let subEditIndex = -1;
-   const todoForm = document.querySelector(".input-section");
-   const todoInput = document.querySelector("#todoInput");
-   const todoList = document.querySelector(".todo-list");
-   const addButton = document.querySelector("#addBtn");
-   const todo_main = document.querySelector(".todos");
-   const searchBy = document.getElementById("search_by");
-   const searchInput = document.getElementById("search-input");
-   const searchButton = document.getElementById("search-button");
-   const prioritySelect = document.getElementById("prioritySelect");
-   const categorySelect = document.getElementById("categorySelect");
-   const dueDateInput = document.getElementById("dueDate");
-   const reminderDateInput = document.getElementById("reminderDate");
+   let todoForm = document.querySelector(".input-section");
+   let todoInput = document.querySelector("#todoInput");
+   let todoList = document.querySelector(".todo-list");
+   let addButton = document.querySelector("#addBtn");
+   let todo_main = document.querySelector(".todos");
+   let searchBy = document.getElementById("search_by");
+   let searchInput = document.getElementById("search-input");
+   let searchButton = document.getElementById("search-button");
+   let prioritySelect = document.getElementById("prioritySelect");
+   let categorySelect = document.getElementById("categorySelect");
+   let dueDateInput = document.getElementById("dueDate");
+   let reminderDateInput = document.getElementById("reminderDate");
 
    function saveTodos() {
       localStorage.setItem("todos", JSON.stringify(todos));
@@ -173,16 +185,17 @@
       todoList.innerHTML = "";
 
       // Get the selected filter values
-      const categoryFilter = document.getElementById("filter_category").value;
-      const priorityFilter = document.getElementById("filter_priority").value;
-      const fromDueFilter = document.getElementById("fromDueDate").value;
-      const toDueFilter = document.getElementById("toDueDate").value;
+      let categoryFilter = document.getElementById("filter_category").value;
+      let priorityFilter = document.getElementById("filter_priority").value;
+      let fromDueFilter = document.getElementById("fromDueDate").value;
+      let toDueFilter = document.getElementById("toDueDate").value;
       // console.log(fromDueFilter,toDueFilter);
 
 // var check = new Date(c[0], parseInt(c[1])-1, c[0]);
 
 
       // Filter todos based on the selected filters
+
       const filteredTodos = todos.filter(todo => {
          if(fromDueFilter && toDueFilter){
             var d1 = fromDueFilter.split("-");
@@ -193,16 +206,15 @@
             var to   = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
             var c = todo.due_date.split("-");
             var check = new Date(c[0], parseInt(c[1])-1, c[2]);
-            // console.log(o)
+            return check > from && check < to;
          }
-         
 
-
-         const dueDateMatch = fromDueFilter && toDueFilter || check > from && check < t;
+         // const dueDateMatch = fromDueFilter && toDueFilter || (check > from && check < to);
          const categoryMatch = categoryFilter === "all" || todo.category === categoryFilter;
          const priorityMatch = priorityFilter === "all" || todo.priority === priorityFilter;
-         return categoryMatch && priorityMatch && dueDateMatch;
+         return categoryMatch && priorityMatch;
       });
+
       displayTodos(filteredTodos);
    }
 
@@ -361,10 +373,12 @@
       prioritySelect.value = '1';
       categorySelect.value = 'development';
       dueDateInput.value = null;
+      reminderDateInput = null;
       saveTodos();
-      closeModel();
+     
       renderSubtask();
       displayTodos(todos);
+      closeModel();
    }
 
    function updateSubTask(id,index) {
@@ -474,6 +488,7 @@
       }else {
          displayTodos(todos);
       }
+      searchInput.value =''
    }
    addButton.addEventListener("click", addTodo);
    searchButton.addEventListener("click", searchTodo);
