@@ -92,11 +92,9 @@
       todoInput.value = "";
       subtasks = [];
       tags = [];
-      console.log(tags,subtasks)
-      prioritySelect.value = '1';
-      categorySelect.value = 'development';
-      dueDateInput.value = null;
-      reminderDateInput = null;
+      dueDateInput.value = new Date(0);
+      reminderDateInput.value = new Date(0);
+
       const subtaskText = document.getElementById("subtask_name");
       subtaskText.innerHTML = "";
       const tagText = document.getElementById("tag_name");
@@ -330,12 +328,12 @@
       // console.log(todoTextWithoutDate, dueDate);
     
       const todoText = todoInput.value.trim();
-      todoForm.addEventListener("click", function (event) {
-         event.preventDefault()
-      });
+      // todoForm.addEventListener("click", function (event) {
+      //    event.preventDefault()
+      // });
       console.log(dueDateInput.value);
-      if (todoText == '' || dueDateInput.value=='' ) return false;
-      if (todoText == '' && editIndex == -1) return false;
+      if (todoText == '' || dueDateInput.value=='' ) return;
+      if (todoText == '' && editIndex == -1) return ;
       
       console.log(dueDateInput.value);
       // Remove the due date from the todo text
@@ -370,8 +368,9 @@
       tags = [];
       prioritySelect.value = '1';
       categorySelect.value = 'development';
-      dueDateInput.value = null;
-      reminderDateInput = '';
+      
+      dueDateInput.value ="";
+      
       saveTodos();
      
       renderSubtask();
@@ -399,6 +398,7 @@
       prioritySelect.value = todos[id].priority;
       categorySelect.value = todos[id].category;
       dueDateInput.value = todos[id].due_date;
+      reminderDateInput.value = todos[id].reminder_date;
       subtasks = todos[id].subtasks;
       tags = todos[id].tags;
       renderSubtask();
